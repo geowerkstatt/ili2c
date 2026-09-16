@@ -28,7 +28,7 @@ allprojects {
 	}
 }
 
-version '5.6.8'+System.getProperty('release','-SNAPSHOT')
+version '5.6.9'+System.getProperty('release','-SNAPSHOT')
 
 configurations {
 	scpAntTask
@@ -42,7 +42,7 @@ configurations {
 
 dependencies {
     implementation "ch.interlis:iox-api:1.0.3"
-    implementation("ch.interlis:iox-ili:1.24.4") {
+    implementation("ch.interlis:iox-ili:1.24.5") {
     	exclude group: 'net.iharder', module: 'base64'
     	exclude group: 'com.vividsolutions', module: 'jts-core'
     }
@@ -138,7 +138,6 @@ task bindist(type: Zip, dependsOn: fatjar) {
 	from("doc"){
 		include "LICENSE.*"
 		include "CHANGELOG.txt"
-		include "README.txt"
 		include "index.html" 
 		into('doc')
 	}

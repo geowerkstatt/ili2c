@@ -161,6 +161,9 @@ private static PredefinedModel instance=null;
   public final Function inEnumRange = new Function();
   public final Function convertUnit = new Function();
   public final Function areAreas = new Function();
+  public final Function areAreas2 = new Function();
+  public final Function areAreasWithoutGaps = new Function();
+  public final Function areAreasWithoutGaps2 = new Function();
 
   public final Table ANYCLASS = new Table ();
   public final Table ANYSTRUCTURE = new Table ();
@@ -478,37 +481,113 @@ einer gemeinsamen Einheit abgeleitet werden.
         });
       convertUnit.setDomain(new NumericType());
       add(convertUnit);
-      /* FUNCTION areAreas (Objects: OBJECTS OF ANYCLASS; SurfaceBag: ATTRIBUTE OF @ Objects RESTRICTION (BAG OF ANYSTRUCTURE); SurfaceAttr: ATTRIBUTE OF @ SurfaceBag RESTRICTION (SURFACE)): BOOLEAN;
-         Prueft, ob die Flaechen gemaess Objektmenge (erster Parameter) und Attribut (dritter Parameter) eine Gebietseinteilung
-         bilden. Sind die Flaechen direkt Teil der Objektklasse, soll fuer SurfaceBag UNDEFINED,
-         sonst der Pfad zum Strukturattribut mit der Struktur, welche das Flaechenattribut enthaelt, angegeben werden.
-      */
-      areAreas.setName("areAreas");
-      FormalArgument arg1=new FormalArgument("Objects",new ObjectType (ANYCLASS,true));
-  	  AttributePathType arg2type=new AttributePathType();
+      
       {
-	      ct = new CompositionType ();
-	      ct.setComponentType (ANYSTRUCTURE);
-	      ct.setOrdered (false);
-		Type[] typev={ct};
-    	arg2type.setArgRestriction(arg1);
-    	arg2type.setTypeRestriction(typev);
+          /* FUNCTION areAreas (Objects: OBJECTS OF ANYCLASS; SurfaceBag: ATTRIBUTE OF @ Objects RESTRICTION (BAG OF ANYSTRUCTURE); SurfaceAttr: ATTRIBUTE OF @ SurfaceBag RESTRICTION (SURFACE)): BOOLEAN;
+          Prueft, ob die Flaechen gemaess Objektmenge (erster Parameter) und Attribut (dritter Parameter) eine Gebietseinteilung
+          bilden. Sind die Flaechen direkt Teil der Objektklasse, soll fuer SurfaceBag UNDEFINED,
+          sonst der Pfad zum Strukturattribut mit der Struktur, welche das Flaechenattribut enthaelt, angegeben werden.
+       */
+       areAreas.setName("areAreas");
+       FormalArgument arg1=new FormalArgument("Objects",new ObjectType (ANYCLASS,true));
+       AttributePathType arg2type=new AttributePathType();
+       {
+           ct = new CompositionType ();
+           ct.setComponentType (ANYSTRUCTURE);
+           ct.setOrdered (false);
+         Type[] typev={ct};
+         arg2type.setArgRestriction(arg1);
+         arg2type.setTypeRestriction(typev);
+       }
+       AttributePathType arg3type=new AttributePathType();
+       {
+         Type[] typev={new SurfaceType()};
+         arg3type.setArgRestriction(arg1);
+         arg3type.setTypeRestriction(typev);
+       }
+       areAreas.setArguments(new FormalArgument[]{
+         arg1,
+         new FormalArgument("SurfaceBag",arg2type),
+         new FormalArgument("SurfaceAttr",arg3type)
+         });
+       tt = new TypeAlias ();
+       tt.setAliasing (BOOLEAN);
+       areAreas.setDomain(tt);
+       add(areAreas);
       }
-	  AttributePathType arg3type=new AttributePathType();
       {
-		Type[] typev={new SurfaceType()};
-    	arg3type.setArgRestriction(arg1);
-    	arg3type.setTypeRestriction(typev);
+          /* FUNCTION areAreas2 (Objects: OBJECTS OF ANYCLASS; SurfaceBag: TEXT; SurfaceAttr: TEXT): BOOLEAN;
+          Prueft, ob die Flaechen gemaess Objektmenge (erster Parameter) und Attribut (dritter Parameter) eine Gebietseinteilung
+          bilden. Sind die Flaechen direkt Teil der Objektklasse, soll fuer SurfaceBag UNDEFINED,
+          sonst der Pfad zum Strukturattribut mit der Struktur, welche das Flaechenattribut enthaelt, angegeben werden.
+       */
+       areAreas2.setName("areAreas2");
+       FormalArgument arg1=new FormalArgument("Objects",new ObjectType (ANYCLASS,true));
+       TextType arg2type=new TextType();
+       TextType arg3type=new TextType();
+       areAreas2.setArguments(new FormalArgument[]{
+         arg1,
+         new FormalArgument("SurfaceBag",arg2type),
+         new FormalArgument("SurfaceAttr",arg3type)
+         });
+       tt = new TypeAlias ();
+       tt.setAliasing (BOOLEAN);
+       areAreas2.setDomain(tt);
+       add(areAreas2);
       }
-      areAreas.setArguments(new FormalArgument[]{
-        arg1,
-        new FormalArgument("SurfaceBag",arg2type),
-        new FormalArgument("SurfaceAttr",arg3type)
-        });
-      tt = new TypeAlias ();
-      tt.setAliasing (BOOLEAN);
-      areAreas.setDomain(tt);
-      add(areAreas);
+      {
+          /* FUNCTION areAreasWithoutGaps (Objects: OBJECTS OF ANYCLASS; SurfaceBag: ATTRIBUTE OF @ Objects RESTRICTION (BAG OF ANYSTRUCTURE); SurfaceAttr: ATTRIBUTE OF @ SurfaceBag RESTRICTION (SURFACE)): BOOLEAN;
+          Prueft, ob die Flaechen gemaess Objektmenge (erster Parameter) und Attribut (dritter Parameter) eine Gebietseinteilung
+          bilden. Sind die Flaechen direkt Teil der Objektklasse, soll fuer SurfaceBag UNDEFINED,
+          sonst der Pfad zum Strukturattribut mit der Struktur, welche das Flaechenattribut enthaelt, angegeben werden.
+       */
+       areAreasWithoutGaps.setName("areAreasWithoutGaps");
+       FormalArgument arg1=new FormalArgument("Objects",new ObjectType (ANYCLASS,true));
+       AttributePathType arg2type=new AttributePathType();
+       {
+           ct = new CompositionType ();
+           ct.setComponentType (ANYSTRUCTURE);
+           ct.setOrdered (false);
+         Type[] typev={ct};
+         arg2type.setArgRestriction(arg1);
+         arg2type.setTypeRestriction(typev);
+       }
+       AttributePathType arg3type=new AttributePathType();
+       {
+         Type[] typev={new SurfaceType()};
+         arg3type.setArgRestriction(arg1);
+         arg3type.setTypeRestriction(typev);
+       }
+       areAreasWithoutGaps.setArguments(new FormalArgument[]{
+         arg1,
+         new FormalArgument("SurfaceBag",arg2type),
+         new FormalArgument("SurfaceAttr",arg3type)
+         });
+       tt = new TypeAlias ();
+       tt.setAliasing (BOOLEAN);
+       areAreasWithoutGaps.setDomain(tt);
+       add(areAreasWithoutGaps);
+      }
+      {
+          /* FUNCTION areAreasWithoutGaps2 (Objects: OBJECTS OF ANYCLASS; SurfaceBag: TEXT; SurfaceAttr: TEXT): BOOLEAN;
+          Prueft, ob die Flaechen gemaess Objektmenge (erster Parameter) und Attribut (dritter Parameter) eine Gebietseinteilung
+          bilden. Sind die Flaechen direkt Teil der Objektklasse, soll fuer SurfaceBag UNDEFINED,
+          sonst der Pfad zum Strukturattribut mit der Struktur, welche das Flaechenattribut enthaelt, angegeben werden.
+       */
+       areAreasWithoutGaps2.setName("areAreasWithoutGaps2");
+       FormalArgument arg1=new FormalArgument("Objects",new ObjectType (ANYCLASS,true));
+       TextType arg2type=new TextType();
+       TextType arg3type=new TextType();
+       areAreasWithoutGaps2.setArguments(new FormalArgument[]{
+         arg1,
+         new FormalArgument("SurfaceBag",arg2type),
+         new FormalArgument("SurfaceAttr",arg3type)
+         });
+       tt = new TypeAlias ();
+       tt.setAliasing (BOOLEAN);
+       areAreasWithoutGaps2.setDomain(tt);
+       add(areAreasWithoutGaps2);
+      }
 
       ANYCLASS.setName ("ANYCLASS");
       add (ANYCLASS);

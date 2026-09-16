@@ -112,6 +112,7 @@ public class Imd16Generator {
         out.write( startBasketEvent );
         ch.interlis.models.IlisMeta16.ModelTranslation.Translation iomModel = new ch.interlis.models.IlisMeta16.ModelTranslation.Translation( "TRANSLATION."+model.getScopedName(null) );
         iomModel.setLanguage(model.getLanguage());
+        visitTranslatedElement(iomModel,model);
         visitTranslatedElements(iomModel,model);
         out.write(new ObjectEvent(iomModel));
         EndBasketEvent endBasketEvent = new EndBasketEvent();
@@ -150,10 +151,13 @@ public class Imd16Generator {
 		if(model.getNoIncrementalTransfer()!=null){
 			iomModel.setNoIncrementalTransfer(model.getNoIncrementalTransfer());
 		}
-		if(model.getIliVersion().equals(ch.interlis.ili2c.metamodel.Model.ILI2_3)){
-			iomModel.setAt( model.getIssuer() );
-			iomModel.setVersion( model.getModelVersion() );
-		}else if(model.getIliVersion().equals(ch.interlis.ili2c.metamodel.Model.ILI1)){
+		if(model.getIssuer()!=null) {
+            iomModel.setAt( model.getIssuer() );
+		}
+		if(model.getModelVersion()!=null) {
+            iomModel.setVersion( model.getModelVersion() );
+		}
+		if(model.getIliVersion().equals(ch.interlis.ili2c.metamodel.Model.ILI1)){
 			iomModel.setili1Transfername(td.getName());
 			// set ili1 format
 			ch.interlis.ili2c.metamodel.Ili1Format ili1fmt=td.getIli1Format();
@@ -2396,20 +2400,14 @@ public class Imd16Generator {
         
         while ( it.hasNext() ) {
             Element ele = it.next();
-            EhiLogger.traceState(ele.toString());
-            ch.interlis.models.IlisMeta16.ModelTranslation.METranslation iomEle=new ch.interlis.models.IlisMeta16.ModelTranslation.METranslation();
-            iomEle.setOf(ele.getElementInRootLanguage().getScopedName());
-            iomEle.setTranslatedName(ele.getName());
-            String doc=ele.getDocumentation();
-            if(doc!=null) {
-                ch.interlis.models.IlisMeta16.ModelTranslation.DocTextTranslation iomDoc=new ch.interlis.models.IlisMeta16.ModelTranslation.DocTextTranslation();
-                iomDoc.setText(doc);
-                iomEle.addTranslatedDoc(iomDoc);
+            if(ele instanceof ch.interlis.ili2c.metamodel.Selection) {
+                return;
             }
-            iomModel.addTranslations(iomEle);
+            visitTranslatedElement(iomModel,ele);
             if(ele instanceof ch.interlis.ili2c.metamodel.Container) {
                 visitTranslatedElements(iomModel,(ch.interlis.ili2c.metamodel.Container)ele);
-            }else if (ele instanceof AttributeDef) {
+            }
+            if (ele instanceof AttributeDef) {
                 AttributeDef attr = (AttributeDef) ele;
                 // If exist
                 if (attr.getDomain() instanceof EnumerationType) {
@@ -2428,6 +2426,21 @@ public class Imd16Generator {
                 }
             }
         }
+    }
+    private void visitTranslatedElement(ch.interlis.models.IlisMeta16.ModelTranslation.Translation iomModel,ch.interlis.ili2c.metamodel.Element ele)
+    throws IoxException
+    {
+        EhiLogger.traceState(ele.toString());
+        ch.interlis.models.IlisMeta16.ModelTranslation.METranslation iomEle=new ch.interlis.models.IlisMeta16.ModelTranslation.METranslation();
+        iomEle.setOf(ele.getElementInRootLanguage().getScopedName());
+        iomEle.setTranslatedName(ele.getName());
+        String doc=ele.getDocumentation();
+        if(doc!=null) {
+            ch.interlis.models.IlisMeta16.ModelTranslation.DocTextTranslation iomDoc=new ch.interlis.models.IlisMeta16.ModelTranslation.DocTextTranslation();
+            iomDoc.setText(doc);
+            iomEle.addTranslatedDoc(iomDoc);
+        }
+        iomModel.addTranslations(iomEle);
     }
 	private void visitElements(ch.interlis.ili2c.metamodel.Container<Element> container)
 	throws IoxException

@@ -374,8 +374,32 @@ public class Imd16GeneratorTest {
 
              
              IomObject classeFrEx=objs.get("TestNlsFrEx_V1.ThemeFrEx.ClasseFrEx");
-             IomObject refObj=classeFrEx.getattrobj(ch.interlis.models.IlisMeta16.ModelData.Class.tag_Super,0);
-             assertEquals("TestNlsDe_V1.ThemaDe.KlasseDe",refObj.getobjectrefoid());
+             IomObject superRefObj=classeFrEx.getattrobj(ch.interlis.models.IlisMeta16.ModelData.Class.tag_Super,0);
+             assertEquals("TestNlsDe_V1.ThemaDe.KlasseDe",superRefObj.getobjectrefoid());
+             
+             {
+                 java.util.Map<String,IomObject> translations=new HashMap<String,IomObject>();
+                 IomObject translation=objs.get("TRANSLATION.TestNlsFr_V1");
+                 int valuec=translation.getattrvaluecount(ch.interlis.models.IlisMeta16.ModelTranslation.Translation.tag_Translations);
+                 for(int valuei=0;valuei<valuec;valuei++) {
+                     IomObject nls=translation.getattrobj(ch.interlis.models.IlisMeta16.ModelTranslation.Translation.tag_Translations,valuei);
+                     IomObject ofRefObj=nls.getattrobj(ch.interlis.models.IlisMeta16.ModelTranslation.METranslation.tag_Of,0);
+                     if(ofRefObj.getobjectrefoid()==null) {
+                         Assert.fail("undefined ref "+ch.interlis.models.IlisMeta16.ModelTranslation.METranslation.tag_Of);
+                     }
+                     if(ofRefObj.getobjectrefoid().contains("null")) {
+                         Assert.fail("unexpected null in '"+ofRefObj.getobjectrefoid()+"'");
+                     }
+                     if(translations.containsKey(ofRefObj.getobjectrefoid())){
+                         Assert.fail("unexpected duplicate of '"+ofRefObj.getobjectrefoid()+"'");
+                     }
+                     translations.put(ofRefObj.getobjectrefoid(),nls);
+                 }
+                 assertEquals("TestNlsFr_V1",translations.get("TestNlsDe_V1").getattrvalue(ch.interlis.models.IlisMeta16.ModelTranslation.METranslation.tag_TranslatedName));
+                 assertEquals("Rot_Fr",translations.get("TestNlsDe_V1.RGB_De.TOP.Rot_De").getattrvalue(ch.interlis.models.IlisMeta16.ModelTranslation.METranslation.tag_TranslatedName));
+                 assertEquals("Maison",translations.get("TestNlsDe_V1.ThemaDe.KlasseDe.Bauwerk.TYPE.TOP.Haus").getattrvalue(ch.interlis.models.IlisMeta16.ModelTranslation.METranslation.tag_TranslatedName));
+                 
+             }
         }
     }
 
